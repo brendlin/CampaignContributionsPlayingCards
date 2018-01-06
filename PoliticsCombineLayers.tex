@@ -1,0 +1,26 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[paperwidth=1566px, paperheight=1089px,top=0px,left=0px,bottom=0px,right=0px]{geometry}
+\usepackage{graphicx}
+\usepackage{subcaption}
+%\setlength{\tabcolsep}{0px}
+\usepackage{xcolor}
+\usepackage{mwe,tikz}\usepackage[percent]{overpic}
+
+\begin{document}
+\nopagecolor
+
+%% \includegraphics[width=1566px]{CardTemplate.pdf}\\
+%% \includegraphics[width=1566px]{PoliticsTableTemplate.pdf}
+
+\noindent
+\begin{tikzpicture}[      
+        every node/.style={anchor=south west,inner sep=0pt},
+        x=1mm, y=1mm,
+      ]   
+     \node (fig1) at (0,0)
+       {\includegraphics[scale=1.00]{CardTemplate.pdf}};
+     \node (fig2) at (0,0)
+       {\includegraphics[scale=1.00]{PoliticsTableTemplate.pdf}};  
+\end{tikzpicture}
+
+\end{document}

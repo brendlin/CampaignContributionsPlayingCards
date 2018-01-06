@@ -1,0 +1,133 @@
+\documentclass[a4paper,14pt,twocolumn,helve]{article}
+\usepackage[paperwidth=1566px, paperheight=1089px,top=0px,left=0px,bottom=0px,right=0px]{geometry}
+\usepackage{graphicx}
+\usepackage{subcaption}
+%\setlength{\tabcolsep}{0px}
+\usepackage{xcolor}
+
+\usepackage{anyfontsize}
+\usepackage{booktabs}
+
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\usepackage{mwe,tikz}\usepackage[percent]{overpic}
+\usepackage{transparent}
+
+% Helvetica
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+% margins?
+\usepackage{scrextend}
+
+\begin{document}
+
+\twocolumn
+
+\nopagecolor
+\noindent
+\phantom{.}\vspace{17px}
+
+\noindent
+\hspace{25px}
+\begin{tikzpicture}[      
+        every node/.style={anchor=south west,inner sep=0pt},
+        x=1pt, y=1pt,
+      ]   
+\begin{scope}
+    \clip [rounded corners=40pt] (0,0) rectangle coordinate (centerpoint) (733pt,743pt); 
+     \node (fig1) at (0,0)
+       {\includegraphics[width=730px]{figures/114_dg_gu_bordallo_madeleine.jpg}};
+\end{scope}
+%% \draw[fill=blue!40!white,line width=7pt] (733-150,0) circle [radius=150pt]
+%%  node {\fontsize{100}{60}\selectfont \bf ST };
+%% \node[draw,circle,minimum size=1cm,inner sep=30pt,fill=blue!40!white,line width=7pt] at (733-150,0) {\fontsize{100}{60}\selectfont \bf AK};
+\node[draw,circle,minimum size=300pt,fill=blue!40!white,line width=7pt] at (733-250pt,-100pt) {\fontsize{80}{60}\selectfont \bf AK};
+
+\draw[fill=blue]   (  0,-170) rectangle (100,-220);
+\draw[fill=red]    (100,-170) rectangle (200,-220);
+\draw[fill=orange] (200,-170) rectangle (300,-220);
+\draw[fill=gray]   (300,-170) rectangle (735,-220);
+\end{tikzpicture}
+
+\phantom{.} \vspace{-210pt}
+
+\fontsize{50}{55}\selectfont
+\begin{addmargin}[20pt]{300pt}
+\begin{center}
+Barbara\\
+BARABARA
+\end{center}
+\end{addmargin}
+
+\fontsize{30}{35}\selectfont
+\phantom{.} \vspace{55pt}
+
+\noindent
+\begin{addmargin}[20pt]{10pt}
+{0\%~small individual ($<$\$200)},
+{30\%~large individual},
+{8\%~PAC},
+{62\%~loans/interest/other (2016)}
+\end{addmargin}
+
+\newpage
+\nopagecolor
+
+\phantom{.}
+\vspace{50pt}
+
+\hspace{120pt}
+\fontsize{30}{29}\selectfont
+{\it ``Whose team are you playing for?'' }
+
+\noindent
+\begin{table}[h!]
+\hspace{15px}
+\fontsize{24}{29}\selectfont
+\begin{tabular}{ L{370px} R{100px} R{100px} R{90px} }
+\phantom{.}\vspace{92pt} \\ \toprule
+\multicolumn{1}{c}{\bf Contributor} & \multicolumn{1}{c}{\bf PACs} & \multicolumn{1}{c}{\bf Individuals} & \multicolumn{1}{c}{\bf Total} \\[-3pt]
+\midrule\\[-20pt]
+Moveon.org                          & 20,297 &   101   & 20,398 \\
+American Federation of Teachers     & 12,700 &     0   & 12,700 \\
+Communications Workers of Am.       & 12,000 &     7   & 12,007 \\
+America Works                       & 10,000 &     0   & 10,000 \\
+Bristol Bay Native Assn             & 0      &10,000   & 10,000 \\
+UNITE HERE                          & 10,000 &     0   & 10,000 \\
+Amalgamated Transit Union           &  9,500 &     0   &  9,500 \\
+University of California            &      0 & 8,553   &  8,553 \\
+Nat'l Union of Healthcare Workers   &  8,000 &    27   &  8,027 \\
+American Postal Workers Union       &  7,700 &     0   &  7,700 \\
+\vspace{-10pt} \\
+\midrule
+\multicolumn{1}{c}{\bf Sector} & \multicolumn{1}{c}{\bf PACs} & \multicolumn{1}{c}{\bf Individuals} & \multicolumn{1}{c}{\bf Total} \\[-3pt]
+\midrule\\[-20pt]
+Moveon.org                          & 20,297 &   101   & 20,398 \\
+American Federation of Teachers     & 12,700 &     0   & 12,700 \\
+Communications Workers of Am.       & 12,000 &     7   & 12,007 \\
+America Works                       & 10,000 &     0   & 10,000 \\
+Bristol Bay Native Assn             & 0      &10,000   & 10,000 \\
+UNITE HERE                          & 10,000 &     0   & 10,000 \\
+Amalgamated Transit Union           &  9,500 &     0   &  9,500 \\
+University of California            &      0 & 8,553   &  8,553 \\
+Nat'l Union of Healthcare Workers   &  8,000 &    27   &  8,027 \\
+American Postal Workers Union       &  7,700 &     0   &  7,700 \\
+\vspace{-10pt} \\
+                                    & & \multicolumn{2}{r}{\bf Total: \$15.6M }\\
+%\vspace{-100px}
+\end{tabular}
+\end{table}
+
+\noindent
+\huge
+\vspace{1px}
+\phantom{.}
+
+\hspace{3px}
+Data from Jan 4, 2018
+
+\end{document}
