@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import subprocess
 import os
+from datetime import datetime
 
 #-------------------------------------------------------------------------
 def main(options,args) :
@@ -25,6 +26,21 @@ def main(options,args) :
             if not os.path.exists(the_file) :
                 print 'Warning:',the_file,'does not exist. Skipping.'
                 continue
+
+        # Get info for "Data from DATE"
+        the_date   = datetime.fromtimestamp(os.path.getmtime(filename_contributors)).strftime('%b %d, %Y')
+        the_date_2 = datetime.fromtimestamp(os.path.getmtime(filename_industries  )).strftime('%b %d, %Y')
+        if the_date != the_date_2 :
+            print 'Error! Ambiguous date:',filename_contributors,filename_industries
+            print the_date,the_date_2
+            return
+        os.system('sed -i \'\' "s/DATE/%s/g" PoliticsTableTemplate_tmp.tex'%(the_date))
+
+        # Sed in the name
+        firstname = name.split('_')[0]
+        lastname  = ' '.join(name.split('_')[1:]).upper()
+        os.system('sed -i \'\' "s/Barbara/%s/g" PoliticsTableTemplate_tmp.tex'%(firstname))
+        os.system('sed -i \'\' "s/BARABARA/%s/g" PoliticsTableTemplate_tmp.tex'%(lastname))
 
         for c_f,the_file in enumerate([filename_contributors,filename_industries]) :
             for jindex,j in enumerate(open(the_file).readlines()) :
