@@ -3,11 +3,13 @@ import os
 #-------------------------------------------------------------------------
 def main(options,args) :
 
+    outfile = open('tmp_ImageData.csv','w')
+
     os.system("wget -O 'tmp_scrape_p1.txt' 'https://www.congress.gov/members?q={%22congress%22:%22115%22}&searchResultViewType=compact&pageSize=250'")
     os.system("wget -O 'tmp_scrape_p2.txt' 'https://www.congress.gov/members?q=%7B%22congress%22%3A%22115%22%7D&searchResultViewType=compact&pageSize=250&page=2'")
     os.system("wget -O 'tmp_scrape_p3.txt' 'https://www.congress.gov/members?q=%7B%22congress%22%3A%22115%22%7D&searchResultViewType=compact&pageSize=250&page=3'")
 
-    os.system('cat tmp_scrape_*.txt >& tmp_scrape.txt')
+    os.system('cat tmp_scrape_*.txt >& tmp_scrape.txt && rm tmp_scrape_p1.txt tmp_scrape_p2.txt tmp_scrape_p3.txt')
 
     member = dict()
 
@@ -30,6 +32,11 @@ def main(options,args) :
             continue
 
         name = i[alt_i:].split('"')[1]
+        firstname = name.split(',')[1].lstrip().split(' ')[0]
+        lastname = name.split(',')[0]
+        name = '%s_%s'%(firstname,lastname)
+        name = name.replace(' ','')
+
         img = i[img_i:].split('"')[1]
 
         if name in member.keys() :
@@ -48,16 +55,19 @@ def main(options,args) :
                 break
 
         img = img.replace('_200','')
+        #img_local = img.replace('/img/member/','')
+        img_local = 'figures/%s.jpg'%(name)
 
         member[name] = dict()
-        member[name]['img'] = img
+        member[name]['img'] = img_local
         member[name]['state'] = state
 
-        print '%s %s %s %s' % (state,district,name,img)
+        outfile.write('%s,%s,%s,%s\n' % (name,state,district,img_local))
 
-        #os.system('mkdir -p %s'%(state.replace(' ','_')))
         os.system('mkdir -p figures')
-        os.system("wget -O 'figures/%s' 'https://www.congress.gov%s'"%(img.replace('/img/member/',''),img))
+        os.system("wget -O '%s' 'https://www.congress.gov%s'"%(img_local,img))
+
+    outfile.close()
 
     print 'done'
 
