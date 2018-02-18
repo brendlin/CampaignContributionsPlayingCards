@@ -33,6 +33,8 @@ def main(options,args) :
             if len(j.split(',')) > 3 :
                 name = j.split(',')[3].split('(')[0].rstrip().replace(' ','_')
 
+        # This is the reason why the ID file must exist for '--type industries'
+        # (otherwise there is no way to get the name)
         if options.file and options.type == 'industries' :
             name = the_names[index]
 
