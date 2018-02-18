@@ -1,62 +1,71 @@
 import os
 
-os.system("wget -O 'tmp_scrape_p1.txt' 'https://www.congress.gov/members?q={%22congress%22:%22115%22}&searchResultViewType=compact&pageSize=250'")
-os.system("wget -O 'tmp_scrape_p2.txt' 'https://www.congress.gov/members?q=%7B%22congress%22%3A%22115%22%7D&searchResultViewType=compact&pageSize=250&page=2'")
-os.system("wget -O 'tmp_scrape_p3.txt' 'https://www.congress.gov/members?q=%7B%22congress%22%3A%22115%22%7D&searchResultViewType=compact&pageSize=250&page=3'")
+#-------------------------------------------------------------------------
+def main(options,args) :
 
-os.system('cat tmp_scrape_*.txt >& tmp_scrape.txt')
+    os.system("wget -O 'tmp_scrape_p1.txt' 'https://www.congress.gov/members?q={%22congress%22:%22115%22}&searchResultViewType=compact&pageSize=250'")
+    os.system("wget -O 'tmp_scrape_p2.txt' 'https://www.congress.gov/members?q=%7B%22congress%22%3A%22115%22%7D&searchResultViewType=compact&pageSize=250&page=2'")
+    os.system("wget -O 'tmp_scrape_p3.txt' 'https://www.congress.gov/members?q=%7B%22congress%22%3A%22115%22%7D&searchResultViewType=compact&pageSize=250&page=3'")
 
-member = dict()
+    os.system('cat tmp_scrape_*.txt >& tmp_scrape.txt')
 
-lines = open('tmp_scrape.txt').readlines()
+    member = dict()
 
-for index,i in enumerate(lines) :
+    lines = open('tmp_scrape.txt').readlines()
 
-    if index > 3000 : continue
+    for index,i in enumerate(lines) :
 
-    i = i.replace('\n','')
-    if '.jpg' not in i :
-        continue
+        if index > 3000 : continue
 
-    alt_i = i.find('alt=')
-    if alt_i < 0 :
-        continue
+        i = i.replace('\n','')
+        if '.jpg' not in i :
+            continue
 
-    img_i = i.find('img src=')
-    if img_i < 0 :
-        continue
+        alt_i = i.find('alt=')
+        if alt_i < 0 :
+            continue
 
-    name = i[alt_i:].split('"')[1]
-    img = i[img_i:].split('"')[1]
+        img_i = i.find('img src=')
+        if img_i < 0 :
+            continue
 
-    if name in member.keys() :
-        continue
+        name = i[alt_i:].split('"')[1]
+        img = i[img_i:].split('"')[1]
 
-    state = 'Unknown'
-    for jindex,j in enumerate(lines[index:index+30]) :
-        if 'State:' in j :
-            state = lines[index+jindex+1].split('<span>')[1].split('</span>')[0]
-            break
+        if name in member.keys() :
+            continue
 
-    district = '---'
-    for jindex,j in enumerate(lines[index:index+30]) :
-        if 'District:' in j :
-            district = lines[index+jindex+1].split('<span>')[1].split('</span>')[0]
-            break
+        state = 'Unknown'
+        for jindex,j in enumerate(lines[index:index+30]) :
+            if 'State:' in j :
+                state = lines[index+jindex+1].split('<span>')[1].split('</span>')[0]
+                break
 
-    img = img.replace('_200','')
+        district = '---'
+        for jindex,j in enumerate(lines[index:index+30]) :
+            if 'District:' in j :
+                district = lines[index+jindex+1].split('<span>')[1].split('</span>')[0]
+                break
 
-    member[name] = dict()
-    member[name]['img'] = img
-    member[name]['state'] = state
-    
-    print '%s %s %s %s' % (state,district,name,img)
+        img = img.replace('_200','')
 
-    #os.system('mkdir -p %s'%(state.replace(' ','_')))
-    os.system('mkdir -p figures')
-    
-    os.system("wget -O 'figures/%s' 'https://www.congress.gov%s'"%(img.replace('/img/member/',''),img))
+        member[name] = dict()
+        member[name]['img'] = img
+        member[name]['state'] = state
 
-    os.system('')
-    
-print 'done'
+        print '%s %s %s %s' % (state,district,name,img)
+
+        #os.system('mkdir -p %s'%(state.replace(' ','_')))
+        os.system('mkdir -p figures')
+        os.system("wget -O 'figures/%s' 'https://www.congress.gov%s'"%(img.replace('/img/member/',''),img))
+
+    print 'done'
+
+#-----------------------------------------------
+if __name__ == '__main__':
+
+    from optparse import OptionParser
+    p = OptionParser()
+    options,args = p.parse_args()
+
+    main(options,args)
