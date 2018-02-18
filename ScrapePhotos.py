@@ -17,7 +17,7 @@ def main(options,args) :
 
     for index,i in enumerate(lines) :
 
-        if index > 3000 : continue
+        # if index > 3000 : continue
 
         i = i.replace('\n','')
         if '.jpg' not in i :
@@ -57,15 +57,16 @@ def main(options,args) :
         img = img.replace('_200','')
         #img_local = img.replace('/img/member/','')
         img_local = 'figures/%s.jpg'%(name)
+        original_img = 'https://www.congress.gov%s'%(img)
 
         member[name] = dict()
         member[name]['img'] = img_local
         member[name]['state'] = state
 
-        outfile.write('%s,%s,%s,%s\n' % (name,state,district,img_local))
+        outfile.write('%s,%s,%s,%s,%s\n' % (name,state,district,img_local,original_img))
 
         os.system('mkdir -p figures')
-        os.system("wget -O '%s' 'https://www.congress.gov%s'"%(img_local,img))
+        os.system("wget -O '%s' '%s'"%(img_local,original_img))
 
     outfile.close()
 

@@ -6,8 +6,7 @@ def main(options,args) :
     if options.file :
         the_loop  = list(a.split(',')[0] for a in open(options.file).readlines())
         the_names = list(a.replace('\n','').split(',')[1] for a in open(options.file).readlines())
-        print the_loop
-        print the_names
+        print ' '.join(the_names)
     else :
         the_loop = range(0,100000)
 
@@ -50,6 +49,7 @@ def main(options,args) :
         if not options.file :
             print 'N%08d'%(entry),name
 
+        os.system('mkdir -p data')
         os.system('mv tmp.csv data/%s_%s_%s.csv'%(name,options.cycle,options.type))
 
     return
