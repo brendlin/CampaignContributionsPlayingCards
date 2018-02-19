@@ -2,6 +2,8 @@
 import subprocess
 import os
 from datetime import datetime
+import csv
+import Utils
 
 #-------------------------------------------------------------------------
 def main(options,args) :
@@ -14,11 +16,11 @@ def main(options,args) :
         print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
         print name
 
+#         if index == 1 :
+#             break
+
         if '#' in i :
             continue
-
-#         if index == 10 :
-#             break
 
         os.system('cp PoliticsTableTemplate.tex PoliticsTableTemplate_tmp.tex')
 
@@ -63,8 +65,8 @@ def main(options,args) :
                 if jindex == 11 :
                     break
 
-                j = j.replace('\n','')
-                j = j.split(',')
+                # Returns a list. Basically to avoid commas inside names of things
+                j = list(csv.reader([j]))[0]
 
                 if c_f == 0 :
                     data_i,sed_item_0,sed_item_1 = 'contributors','CONTRIBUTOR','C'
@@ -104,8 +106,8 @@ def main(options,args) :
                 os.system("sed -i \'\' 's/%sTOT%d/%s/g'        PoliticsTableTemplate_tmp.tex"%(sed_item_1,jindex-1,total))
                 os.system("sed -i \'\' \"s/APOSTROPHE/\'/g\"   PoliticsTableTemplate_tmp.tex")
 
-        os.system('pdflatex PoliticsTableTemplate_tmp.tex')
-        os.system('pdflatex PoliticsCombineLayers.tex')
+        Utils.pdflatex('.','PoliticsTableTemplate_tmp.tex')
+        Utils.pdflatex('.','PoliticsCombineLayers.tex')
         os.system('mv PoliticsCombineLayers.pdf output/%s.pdf'%(name))
         #subprocess.Popen(['pdflatex','PoliticsTableTemplate_tmp.tex'],stdout=subprocess.PIPE)
 
