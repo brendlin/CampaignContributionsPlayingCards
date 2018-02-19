@@ -79,7 +79,8 @@ def main(options,args) :
                 else :
                     data_i,sed_item_0,sed_item_1 = 'industries','SECTOR','S'
                     data[data_i].append(dict())
-                    data[data_i][-1]['name'] = j[5]
+                    xtmp = j[5]
+                    data[data_i][-1]['name'] = xtmp[0] + xtmp[1:].lower()
                     data[data_i][-1]['total'] = j[1]
                     data[data_i][-1]['pac'] = j[3]
                     data[data_i][-1]['indiv'] = j[2]
@@ -93,10 +94,31 @@ def main(options,args) :
                 cname = cname.replace('&','\\\\\\&')
                 cname = cname.replace('\'','APOSTROPHE')
 
-                if len(cname.replace('\\','')) > 30 :
-                    cname = cname.replace('American','Am.')
-                    cname = cname.replace('America','Am.')
-                    cname = cname.replace('National','NatAPOSTROPHEl')
+                def toobig(nm) :
+                    return len(nm.replace('\\','')) > 30
+
+                if toobig(cname) : cname = cname.replace('American','Am.')
+                if toobig(cname) : cname = cname.replace('America','Am.')
+                if toobig(cname) : cname = cname.replace('National','NatAPOSTROPHEl')
+                if toobig(cname) : cname = cname.replace('International','IntAPOSTROPHEl')
+                if toobig(cname) : cname = cname.replace('Workers','Wrkrs')
+                if toobig(cname) : cname = cname.replace('Brotherhood','Bhood')
+                if toobig(cname) : cname = cname.replace('United','Utd')
+                if toobig(cname) : cname = cname.replace('Union','Un.')
+                if toobig(cname) : cname = cname.replace('Massachusetts','Mass.')
+                if toobig(cname) : cname = cname.replace('Cooperative','Coop.')
+                if toobig(cname) : cname = cname.replace('Education','Ed.')
+                if toobig(cname) : cname = cname.replace('Independent','Indep.')
+                if toobig(cname) : cname = cname.replace('Council','Counc.')
+                if toobig(cname) : cname = cname.replace('The','')
+                if toobig(cname) : cname = cname.replace('the','')
+                if toobig(cname) : cname = cname.replace('Academy','Acad.')
+                if toobig(cname) : cname = cname.replace('Investment Trusts','Invest...')
+                if toobig(cname) : cname = cname.replace('Financial Advisors','Financ...')
+
+                if toobig(cname) : cname = cname.replace('Insurance Agents \\\\\& Brokers','Insurance Agents \\\\\& Br...')
+                if toobig(cname) : cname = cname.replace('Crop production \\\\\& basic processing','Crop production, basic processing')
+                if toobig(cname) : cname = cname.replace('Orthopaedic Surgeons','Orthopaedic Surg...')
 
                 print cname
 
@@ -108,7 +130,9 @@ def main(options,args) :
 
         Utils.pdflatex('.','PoliticsTableTemplate_tmp.tex')
         Utils.pdflatex('.','PoliticsCombineLayers.tex')
-        os.system('mv PoliticsCombineLayers.pdf output/%s.pdf'%(name))
+        cmd = 'mv PoliticsCombineLayers.pdf output/%s.pdf'%(name)
+        print cmd
+        os.system(cmd)
         #subprocess.Popen(['pdflatex','PoliticsTableTemplate_tmp.tex'],stdout=subprocess.PIPE)
 
     print 'Skipped:'
