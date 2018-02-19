@@ -6,18 +6,30 @@ import csv
 import Utils
 
 #-------------------------------------------------------------------------
+def file_len(fname):
+    with open(fname) as f:
+        for i, l in enumerate(f):
+            pass
+    return i + 1
+
+#-------------------------------------------------------------------------
 def main(options,args) :
 
     skipped = []
+    too_long = []
+
+    npoliticians = file_len('OpenSecretsIDs.csv')
 
     for index,i in enumerate(open('OpenSecretsIDs.csv').readlines()) :
+        if index == options.n :
+            break
+
         i = i.replace('\n','')
         name = i.split(',')[1]
         print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+        if not index%1 :
+            print 'Processing %d of %d %2.2f%%'%(index,npoliticians,index/float(npoliticians))
         print name
-
-#         if index == 1 :
-#             break
 
         if '#' in i :
             continue
@@ -95,32 +107,45 @@ def main(options,args) :
                 cname = cname.replace('\'','APOSTROPHE')
 
                 def toobig(nm) :
-                    return len(nm.replace('\\','')) > 30
+                    return len(nm.replace('\\','').replace('APOSTROPHE','#')) > 31
 
                 if toobig(cname) : cname = cname.replace('American','Am.')
                 if toobig(cname) : cname = cname.replace('America','Am.')
                 if toobig(cname) : cname = cname.replace('National','NatAPOSTROPHEl')
                 if toobig(cname) : cname = cname.replace('International','IntAPOSTROPHEl')
+                if toobig(cname) : cname = cname.replace('Government','GovAPOSTROPHEt')
+                if toobig(cname) : cname = cname.replace('Federation','Fed.')
+                if toobig(cname) : cname = cname.replace('Federal','Fed.')
                 if toobig(cname) : cname = cname.replace('Workers','Wrkrs')
                 if toobig(cname) : cname = cname.replace('Brotherhood','Bhood')
                 if toobig(cname) : cname = cname.replace('United','Utd')
                 if toobig(cname) : cname = cname.replace('Union','Un.')
+                if toobig(cname) : cname = cname.replace('University','Univ.')
                 if toobig(cname) : cname = cname.replace('Massachusetts','Mass.')
+                if toobig(cname) : cname = cname.replace('Texas','TX')
                 if toobig(cname) : cname = cname.replace('Cooperative','Coop.')
                 if toobig(cname) : cname = cname.replace('Education','Ed.')
                 if toobig(cname) : cname = cname.replace('Independent','Indep.')
                 if toobig(cname) : cname = cname.replace('Council','Counc.')
+                if toobig(cname) : cname = cname.replace('Mechanical','Mech.')
                 if toobig(cname) : cname = cname.replace('The','')
                 if toobig(cname) : cname = cname.replace('the','')
                 if toobig(cname) : cname = cname.replace('Academy','Acad.')
+                if toobig(cname) : cname = cname.replace('Retired','Ret.')
+                if toobig(cname) : cname = cname.replace('Community','Commun.')
+                if toobig(cname) : cname = cname.replace('Pharmaceuticals','Pharma')
+                if toobig(cname) : cname = cname.replace('Center','Ctr.')
                 if toobig(cname) : cname = cname.replace('Investment Trusts','Invest...')
                 if toobig(cname) : cname = cname.replace('Financial Advisors','Financ...')
+                if toobig(cname) : cname = cname.replace('Fed. Employees Assn','Fed. Employ...')
 
+                if toobig(cname) : cname = cname.replace('Support to Ensure Victory Everywhere PAC','S.T.E.V.E. PAC')
                 if toobig(cname) : cname = cname.replace('Insurance Agents \\\\\& Brokers','Insurance Agents \\\\\& Br...')
                 if toobig(cname) : cname = cname.replace('Crop production \\\\\& basic processing','Crop production, basic processing')
                 if toobig(cname) : cname = cname.replace('Orthopaedic Surgeons','Orthopaedic Surg...')
 
-                print cname
+                if toobig(cname) :
+                    too_long.append(cname)
 
                 os.system("sed -i \'\' 's/%s%d/%s/g'           PoliticsTableTemplate_tmp.tex"%(sed_item_0,jindex-1,cname))
                 os.system("sed -i \'\' 's/%sPAC%d/%s/g'        PoliticsTableTemplate_tmp.tex"%(sed_item_1,jindex-1,pac))
@@ -139,6 +164,10 @@ def main(options,args) :
     for sk in skipped :
         print ' -',sk
 
+    print 'Too long:'
+    for tl in set(too_long) :
+        print ' -',tl
+
     print 'done'
     return
 
@@ -148,6 +177,7 @@ if __name__ == '__main__':
     from optparse import OptionParser
     p = OptionParser()
     p.add_option('--cycle',type='string',default='2018',dest='cycle',help='Election cycle')
+    p.add_option('-n','--n',type='float',default=100000,dest='n',help='Process n entries')
     options,args = p.parse_args()
 
     main(options,args)
