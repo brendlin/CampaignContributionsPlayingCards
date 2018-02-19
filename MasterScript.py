@@ -6,12 +6,19 @@ from datetime import datetime
 #-------------------------------------------------------------------------
 def main(options,args) :
 
+    skipped = []
+
     for index,i in enumerate(open('OpenSecretsIDs.csv').readlines()) :
         i = i.replace('\n','')
         name = i.split(',')[1]
+        print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+        print name
 
-        if index == 1 :
-            break
+        if '#' in i :
+            continue
+
+#         if index == 10 :
+#             break
 
         os.system('cp PoliticsTableTemplate.tex PoliticsTableTemplate_tmp.tex')
 
@@ -22,19 +29,26 @@ def main(options,args) :
         filename_contributors = 'data/%s_%s_contributors.csv'%(name,options.cycle)
         filename_industries   = 'data/%s_%s_industries.csv'%(name,options.cycle)
 
-        for the_file in [filename_contributors,filename_industries] :
-            if not os.path.exists(the_file) :
-                print 'Warning:',the_file,'does not exist. Skipping.'
-                continue
+        if not os.path.exists(filename_contributors) :
+            print 'Warning:',filename_contributors,'does not exist. Skipping.'
+            skipped.append(name)
+            continue
+        if not os.path.exists(filename_industries) :
+            print 'Warning:',filename_industries,'does not exist. Skipping.'
+            skipped.append(name)
+            continue
 
         # Get info for "Data from DATE"
-        the_date   = datetime.fromtimestamp(os.path.getmtime(filename_contributors)).strftime('%b %d, %Y')
-        the_date_2 = datetime.fromtimestamp(os.path.getmtime(filename_industries  )).strftime('%b %d, %Y')
-        if the_date != the_date_2 :
-            print 'Error! Ambiguous date:',filename_contributors,filename_industries
-            print the_date,the_date_2
-            return
-        os.system('sed -i \'\' "s/DATE/%s/g" PoliticsTableTemplate_tmp.tex'%(the_date))
+        the_date   = datetime.fromtimestamp(os.path.getmtime(filename_contributors))
+        the_date_2 = datetime.fromtimestamp(os.path.getmtime(filename_industries  ))
+        if (the_date_2 - the_date).total_seconds()/3600. > 5 :
+            if the_date.strftime('%b %d, %Y') != the_date_2.strftime('%b %d, %Y') :
+                print 'Error! Ambiguous date:'
+                print '---',filename_contributors,the_date
+                print '---',filename_industries,the_date_2
+                print '%2.2f hours'%((the_date_2 - the_date).total_seconds()/3600.)
+                return
+        os.system('sed -i \'\' "s/DATE/%s/g" PoliticsTableTemplate_tmp.tex'%(the_date.strftime('%b %d, %Y')))
 
         # Sed in the name
         firstname = name.split('_')[0]
@@ -74,20 +88,30 @@ def main(options,args) :
                 indiv = data[data_i][-1]['indiv']
 
                 cname = cname.replace('/','\/')
-                cname = cname.replace('&','and')
+                cname = cname.replace('&','\\\\\\&')
+                cname = cname.replace('\'','APOSTROPHE')
 
-                if len(cname) > 30 :
+                if len(cname.replace('\\','')) > 30 :
+                    cname = cname.replace('American','Am.')
                     cname = cname.replace('America','Am.')
+                    cname = cname.replace('National','NatAPOSTROPHEl')
 
-                os.system('sed -i \'\' "s/%s%d/%s/g" PoliticsTableTemplate_tmp.tex'%(sed_item_0,jindex-1,cname))
-                os.system('sed -i \'\' "s/%sPAC%d/%s/g"        PoliticsTableTemplate_tmp.tex'%(sed_item_1,jindex-1,pac))
-                os.system('sed -i \'\' "s/%sINDIV%d/%s/g"      PoliticsTableTemplate_tmp.tex'%(sed_item_1,jindex-1,indiv))
-                os.system('sed -i \'\' "s/%sTOT%d/%s/g"        PoliticsTableTemplate_tmp.tex'%(sed_item_1,jindex-1,total))
+                print cname
+
+                os.system("sed -i \'\' 's/%s%d/%s/g'           PoliticsTableTemplate_tmp.tex"%(sed_item_0,jindex-1,cname))
+                os.system("sed -i \'\' 's/%sPAC%d/%s/g'        PoliticsTableTemplate_tmp.tex"%(sed_item_1,jindex-1,pac))
+                os.system("sed -i \'\' 's/%sINDIV%d/%s/g'      PoliticsTableTemplate_tmp.tex"%(sed_item_1,jindex-1,indiv))
+                os.system("sed -i \'\' 's/%sTOT%d/%s/g'        PoliticsTableTemplate_tmp.tex"%(sed_item_1,jindex-1,total))
+                os.system("sed -i \'\' \"s/APOSTROPHE/\'/g\"   PoliticsTableTemplate_tmp.tex")
 
         os.system('pdflatex PoliticsTableTemplate_tmp.tex')
         os.system('pdflatex PoliticsCombineLayers.tex')
         os.system('mv PoliticsCombineLayers.pdf output/%s.pdf'%(name))
         #subprocess.Popen(['pdflatex','PoliticsTableTemplate_tmp.tex'],stdout=subprocess.PIPE)
+
+    print 'Skipped:'
+    for sk in skipped :
+        print ' -',sk
 
     print 'done'
     return
