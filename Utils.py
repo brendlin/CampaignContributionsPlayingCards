@@ -52,7 +52,8 @@ nicknames = {'Bernie':'Bernard' ,
              'Pete'  :'Peter'   ,
              'Rick'  :'Richard' ,
              'Rob'   :'Robert'  ,
-             'Steve' :'Stevan'  ,
+             'Steven':'Steve'   ,
+             'Steve' :['Stevan','Stephen'],
              'Mike'  :'Michael' ,
              'Ted'   :'Theodore',
              'Tim'   :'Timothy' ,
@@ -87,16 +88,16 @@ def FindPhoto(name,dir) :
             return i_name
 
         if firstname in nicknames.keys() :
-            tmp_firstname = nicknames[firstname]
-            #print tmp_firstname,i_firstname,i_lastname,lastname
-            if (i_firstname == tmp_firstname) and (i_lastname == lastname) :
-                return i_name
+            tmp_firstnames = nicknames[firstname]
 
-        if firstname in nicknames2.keys() :
-            tmp_firstname = nicknames2[firstname]
-            #print tmp_firstname,i_firstname,i_lastname,lastname
-            if (i_firstname == tmp_firstname) and (i_lastname == lastname) :
-                return i_name
+            # convert to list
+            if type(tmp_firstnames) == type('') :
+                tmp_firstnames = [tmp_firstnames]
+
+            # cycle through nicknames
+            for tmp_firstname in tmp_firstnames :
+                if (i_firstname == tmp_firstname) and (i_lastname == lastname) :
+                    return i_name
 
     print 'could not find %s'%(name)
     return ''
