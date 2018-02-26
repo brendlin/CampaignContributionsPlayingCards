@@ -74,7 +74,7 @@ def main(options,args) :
         photo = 'Bernard_Sanders.jpg'
         tmp_ph = Utils.FindPhoto(name,'figures')
         if not tmp_ph :
-            return
+            continue
         if tmp_ph :
             photo = tmp_ph
         os.system('sed -i \'\' "s/Bernard_Sanders.jpg/%s/g" PoliticsTableTemplate_tmp.tex'%(photo))
