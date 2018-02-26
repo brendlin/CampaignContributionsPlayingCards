@@ -26,10 +26,10 @@ def main(options,args) :
 
         i = i.replace('\n','')
         name = i.split(',')[1]
-        print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
-        if not index%1 :
-            print 'Processing %d of %d %2.2f%%'%(index,npoliticians,index/float(npoliticians))
-        print name
+#         print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+#         if not index%1 :
+#             print 'Processing %d of %d %2.2f%%'%(index,npoliticians,index/float(npoliticians))
+#         print name
 
         if '#' in i :
             continue
@@ -69,6 +69,15 @@ def main(options,args) :
         lastname  = ' '.join(name.split('_')[1:]).upper()
         os.system('sed -i \'\' "s/Barbara/%s/g" PoliticsTableTemplate_tmp.tex'%(firstname))
         os.system('sed -i \'\' "s/BARABARA/%s/g" PoliticsTableTemplate_tmp.tex'%(lastname))
+
+        # Sed in the picture
+        photo = 'Bernard_Sanders.jpg'
+        tmp_ph = Utils.FindPhoto(name,'figures')
+        if not tmp_ph :
+            return
+        if tmp_ph :
+            photo = tmp_ph
+        os.system('sed -i \'\' "s/Bernard_Sanders.jpg/%s/g" PoliticsTableTemplate_tmp.tex'%(photo))
 
         for c_f,the_file in enumerate([filename_contributors,filename_industries]) :
             for jindex,j in enumerate(open(the_file).readlines()) :
@@ -121,6 +130,7 @@ def main(options,args) :
                 if toobig(cname) : cname = cname.replace('United','Utd')
                 if toobig(cname) : cname = cname.replace('Union','Un.')
                 if toobig(cname) : cname = cname.replace('University','Univ.')
+                if toobig(cname) : cname = cname.replace('Management','Mgmt.')
                 if toobig(cname) : cname = cname.replace('Massachusetts','Mass.')
                 if toobig(cname) : cname = cname.replace('Texas','TX')
                 if toobig(cname) : cname = cname.replace('Cooperative','Coop.')
@@ -128,9 +138,10 @@ def main(options,args) :
                 if toobig(cname) : cname = cname.replace('Independent','Indep.')
                 if toobig(cname) : cname = cname.replace('Council','Counc.')
                 if toobig(cname) : cname = cname.replace('Mechanical','Mech.')
-                if toobig(cname) : cname = cname.replace('The','')
-                if toobig(cname) : cname = cname.replace('the','')
+                if toobig(cname) : cname = cname.replace(' The ',' ')
+                if toobig(cname) : cname = cname.replace(' the ',' ')
                 if toobig(cname) : cname = cname.replace('Academy','Acad.')
+                if toobig(cname) : cname = cname.replace('South','S.')
                 if toobig(cname) : cname = cname.replace('Retired','Ret.')
                 if toobig(cname) : cname = cname.replace('Community','Commun.')
                 if toobig(cname) : cname = cname.replace('Pharmaceuticals','Pharma')
@@ -156,7 +167,7 @@ def main(options,args) :
         Utils.pdflatex('.','PoliticsTableTemplate_tmp.tex')
         Utils.pdflatex('.','PoliticsCombineLayers.tex')
         cmd = 'mv PoliticsCombineLayers.pdf output/%s.pdf'%(name)
-        print cmd
+        #print cmd
         os.system(cmd)
         #subprocess.Popen(['pdflatex','PoliticsTableTemplate_tmp.tex'],stdout=subprocess.PIPE)
 
